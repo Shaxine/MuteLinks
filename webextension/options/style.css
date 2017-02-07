@@ -1,0 +1,8 @@
+body {
+  font: message-box;
+  background-color:#000;
+}
+
+label: {
+  display:block; font-size: 1.25em; line-height: 22px; color: #333
+}

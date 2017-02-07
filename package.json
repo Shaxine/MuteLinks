@@ -1,0 +1,19 @@
+{
+  "title": "MuteLinks",
+  "name": "mutelinks",
+  "version": "0.1.0",
+  "description": "Mute Tabs based of URL",
+  "main": "main.js",
+  "author": "Shaxine",
+  "icon": "resource://@mutelinks/icon.png",
+  "engines": {
+    "firefox": ">=51.0",
+    "fennec": ">=51.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "jetpack", "sound", "mute", "tab", "tabs", "link", "links", "url", "urls", "private", "incognito", "webextension"
+  ],
+  "permissions": {"private-browsing": true, "multiprocess": true},
+  "hasEmbeddedWebExtension": true
+}
