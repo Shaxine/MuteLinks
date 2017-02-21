@@ -1,4 +1,3 @@
-let tabs = require("sdk/tabs");
 let tab_utils = require("sdk/tabs/utils");
 let prefs = require("sdk/simple-prefs").prefs;
 let { viewFor } = require("sdk/view/core");
