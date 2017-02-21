@@ -3,79 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <style type="text/css">
-      body {
-        font: message-box;
-      }
-      form > div {
-        border-top: 1px solid #c1c1c1;
-        display: block;
-      }
-
-      form label {
-        padding-top: 10px;
-        display:inline;
-        font-size: 1.25em;
-        line-height: 22px;
-        color: #333;
-        margin-right: 10px;
-      }
-
-      form label div {
-        display: inline-block;
-        margin-top: 5px;
-      }
-
-      input {
-        background-color: #fff;
-        color: var(--in-content-text-color);
-        border: 1px solid rgb(193, 193, 193);
-        font-size: 12px;
-        line-height: 20px;
-      }
-
-      label input:focus {
-        border-color: var(--in-content-border-focus);
-      }
-
-      p {
-        color: graytext;
-        margin-top: 0px;
-        margin-left: 10px;
-        cursor: default;
-      }
-      
-      table {
-        border-collapse: collapse;
-        margin: 10px 0;
-        background-color: #f5f5f5;
-      }
-
-      table th, table td {
-        border: 1px solid #dddddd;
-        padding: 5px;
-      }
-
-      table td .change-rule{
-        display: none;
-      }
-
-      table img {
-        max-width: 16px;
-        max-height: 16px;
-        margin: 5px 5px 0 5px;
-        cursor: pointer;
-      }
-
-      table img.disabled{
-        opacity: 0.3;
-        cursor: not-allowed;
-      }
-
-      table img.accept{
-        display: none;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="options.css">
   </head>
   <body>
     <form>
@@ -104,10 +32,23 @@
         <p>Example: facebook.com, .org, 'https://www.reddit.com/'</p>
       </div>
       <div>
-        <label><div>Mute Private Tabs</div><input type="checkbox" id="priavtetab_check"></label>
+        <label><div>Mute Private Tabs</div><input type="checkbox" id="privatetab_check"></label>
         <p>Mutes all Private Tabs independent of the White and Back lists rules.</p>
       </div>
+      <div>
+        <label><div>Context menu entry</div><select id="context_menu">
+          <option value="top">Top</option>
+          <option value="bottom">Bottom</option>
+          <option value="none">Hide</option>
+        </select></label>
+        <p>Position of MuteLinks entry in the Tab's context menu.</p>
+      </div>
     </form>
+    <div class="donate">
+      <img class="coffee" src="img/coffee.png"><p>Buy me a coffee!</p><br/>
+      <img id="paypal" src="img/paypal.png" alt="Paypal">
+      <img id="bitcoin" src="img/bitcoin.png" alt="Bitcoin"><p class="bitcoin-adress">1FWwK79daju248GYHXkmAdwojFQR1p6F7s</p>
+    </div>
     <script src="jquery-3.1.1.min.js"></script>
     <script src="options.js"></script>
   </body>

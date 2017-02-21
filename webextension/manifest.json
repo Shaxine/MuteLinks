@@ -7,7 +7,10 @@
       }
     },
 
-    "author": "Shaxine",
+    "developer": {
+      "name": "Shaxine",
+      "url": "https://addons.mozilla.org/en-US/firefox/user/Shaxine/"
+    },
 
     "background": {
       "scripts": ["background.js"]
@@ -35,7 +38,7 @@
       "tabs"
     ],
 
-    "version": "0.1.0",
+    "version": "0.1.1",
 
     "web_accessible_resources": ["images/my-image.png"]
 }

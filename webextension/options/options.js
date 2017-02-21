@@ -1,4 +1,4 @@
-const prefsNames = ["blackList","whitelist_check","whiteList","priavtetab_check"];
+const prefsNames = ["blackList","whitelist_check","whiteList","privatetab_check","context_menu"];
 
 $(function() {
   restoreOptions();
@@ -67,8 +67,14 @@ $(function() {
       saveOption(option);
     }
   });
-  $('form').on('change', ':checkbox', function(){
+  $('form').on('change', ':checkbox, select', function(){
     saveOption($(this).attr('id'));
+  });
+  $(document).on("click", "#paypal", function(e) {
+    browser.tabs.create({url:"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=79NLHH9LUBGWU"});
+  });
+  $(document).on("click", "#bitcoin", function(e) {
+    $(".bitcoin-adress").css("display","inline");
   });
 });
 
@@ -96,14 +102,14 @@ function restoreOptions() {
 }
 
 function changeItem(item, value) {
-  console.log("changeItem", item, "to:", value);
   if (item == "blackList" || item == "whiteList"){
     if (value != "") {
       for (let i of value.split(/, |,/)){
-        console.log(item, i);
         addItemToTable(item, i);
       }
     }
+  } else if ($("#"+item).prop("tagName").toLowerCase() == "select"){
+    $("#"+item+" option[value=\""+value+"\"]").prop('selected', true);
   } else {
     switch ($("#"+item).prop('type')) {
       case "text":
@@ -134,6 +140,8 @@ function getItem(item) {
     } else {
       return "";
     }
+  } else if ($("#"+item).prop("tagName").toLowerCase() == "select"){
+    return $("#"+item).val();
   } else {
     switch ($("#"+item).prop('type')) {
       case "text":

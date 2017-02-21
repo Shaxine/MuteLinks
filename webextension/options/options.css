@@ -1,0 +1,116 @@
+body {
+  font: message-box;
+}
+
+form > div {
+  border-top: 1px solid #c1c1c1;
+  display: block;
+}
+
+form label {
+  padding-top: 10px;
+  display:inline;
+  font-size: 1.25em;
+  line-height: 22px;
+  color: #333;
+  margin-right: 10px;
+}
+
+form label div {
+  display: inline-block;
+  margin-top: 5px;
+}
+
+input {
+  background-color: #fff;
+  color: var(--in-content-text-color);
+  border: 1px solid rgb(193, 193, 193);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+label input:focus {
+  border-color: var(--in-content-border-focus);
+}
+
+label input[type="checkbox"] {
+  vertical-align: bottom;
+}
+
+select {
+  margin-left: 5px;
+}
+
+p {
+  color: graytext;
+  margin-top: 0px;
+  margin-left: 10px;
+  cursor: default;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 10px 0;
+  background-color: #f5f5f5;
+}
+
+table th, table td {
+  border: 1px solid #dddddd;
+  padding: 5px;
+}
+
+table td .change-rule {
+  display: none;
+}
+
+table img {
+  max-width: 16px;
+  max-height: 16px;
+  margin: 5px 5px 0 5px;
+  cursor: pointer;
+}
+
+table img.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+table img.accept {
+  display: none;
+}
+
+.donate {
+  padding-top: 30px;
+}
+
+.donate img.coffee {
+  margin-top: -8px;
+}
+
+.donate p {
+  display: inline;
+  vertical-align: top;
+  font-weight: bold;
+}
+
+.donate div {
+  display: inline;
+}
+
+.donate form input {
+  border: none;
+}
+
+.donate #paypal {
+  margin-bottom: 1px;
+  margin-right: 5px;
+  margin-left: 20px;
+}
+
+.donate #paypal, .donate #bitcoin {
+  cursor: pointer;
+}
+
+.donate .bitcoin-adress {
+  display: none;
+}

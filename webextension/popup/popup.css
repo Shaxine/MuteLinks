@@ -1,0 +1,17 @@
+html, body {
+  font: message-box;
+  width: 390px;
+}
+
+#entry {
+  width: 360px
+}
+
+.panel {
+  margin: 5px;
+}
+
+button {
+  float: right;
+  margin-left: 5px;
+}
