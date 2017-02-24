@@ -2,12 +2,12 @@ let info = window.location.href.split("info=")[1].split("-");
 
 if (info[2]=="1") {
   document.title = "Add to Whitelist";
-  document.getElementById("header").innerHTML = "Add to Whitelist";
-  document.getElementById("add").innerHTML = "Add to Whitelist";
+  document.getElementById("header").textContent = "Add to Whitelist";
+  document.getElementById("add").textContent = "Add to Whitelist";
 } else {
   document.title = "Add to Blacklist";
-  document.getElementById("header").innerHTML = "Add to Blacklist";
-  document.getElementById("add").innerHTML = "Add to Blacklist";
+  document.getElementById("header").textContent = "Add to Blacklist";
+  document.getElementById("add").textContent = "Add to Blacklist";
 }
 
 browser.runtime.sendMessage({type: "add-popup-loaded", windowId: info[0], tabIndex: info[1]});
