@@ -1,5 +1,6 @@
 "use strict";
 
+const extensionId = window.location.hostname;
 const prefsNames = ["blackList","whitelist_check","whiteList","privatetab_check","context_menu"];
 let prefs = {};
 let port = null;
@@ -72,7 +73,7 @@ function checkForMute(tab) {
     muteTab(tab);
     return true;
   }else if(prefs.privatetab_check && !((prefs.blackList != "" && !prefs.whitelist_check) || prefs.whitelist_check)){
-    if (tab.mutedInfo.muted && tab.mutedInfo.reason == "extension" /*&& tab.mutedInfo.extensionId == browser.runtime.id*/) {
+    if (tab.mutedInfo.muted && tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) {
       unMuteTab(tab);
     }
     return true;
@@ -80,7 +81,7 @@ function checkForMute(tab) {
   let itemsList = prefs.whitelist_check?prefs.whiteList.split(/, |,/):prefs.blackList.split(/, |,/);
   let url = tab.url;
   for (let item of itemsList){
-    if((item.indexOf('\"')==0 && item.slice(-1)=='\"') || (item.indexOf("'")==0 && item.slice(-1)=="'")){
+    if((item.indexOf("\"") == 0 && item.slice(-1) == "\"") || (item.indexOf("'") == 0 && item.slice(-1) == "'")){
       item = item.replace(/\//g , "\\\/");
       item = "^"+item.slice(1, -1)+"$";
     }
@@ -91,7 +92,7 @@ function checkForMute(tab) {
         break;
       }else if(pattern.test(url) && tab.mutedInfo.muted){
         break;
-      }else if((tab.mutedInfo.reason == "extension" /*&& tab.mutedInfo.extensionId == browser.runtime.id*/) && tab.mutedInfo.muted && !pattern.test(url)){
+      }else if((tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted && !pattern.test(url)){
         unMuteTab(tab);
       }
     }else{
@@ -99,7 +100,7 @@ function checkForMute(tab) {
         muteTab(tab);
       }else if(pattern.test(url) && !tab.mutedInfo.muted){
         break;
-      }else if((tab.mutedInfo.reason == "extension" /*&& tab.mutedInfo.extensionId == browser.runtime.id*/) && tab.mutedInfo.muted && pattern.test(url)){
+      }else if((tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted && pattern.test(url)){
         unMuteTab(tab);
         break;
       }
@@ -140,6 +141,7 @@ function retriveData() {
         browser.storage.local.set({privatetab_check: items["priavtetab_check"]});
         delete items["priavtetab_check"];
       }
+      setListeners(prefs);
     }
   }
 }
@@ -150,38 +152,42 @@ function onStorageChanged(changes, area) {
     for (let item of changedItems) {
       prefs[item] = changes[item].newValue;
     }
-    if ("blackList" in changes || "whitelist_check" in changes || "whiteList" in changes || "privatetab_check" in changes) {
-      if(prefs.privatetab_check || (prefs.blackList != "" && !prefs.whitelist_check) || prefs.whitelist_check){
-        if(!browser.tabs.onCreated.hasListener(onTabCreated)) {
-          browser.tabs.onCreated.addListener(onTabCreated);
-          browser.tabs.onUpdated.addListener(onTabUpdated);
+    setListeners(changes);
+  }
+}
+
+function setListeners(data) {
+  if ("blackList" in data || "whitelist_check" in data || "whiteList" in data || "privatetab_check" in data) {
+    if(prefs.privatetab_check || (prefs.blackList != "" && !prefs.whitelist_check) || prefs.whitelist_check){
+      if(!browser.tabs.onCreated.hasListener(onTabCreated)) {
+        browser.tabs.onCreated.addListener(onTabCreated);
+        browser.tabs.onUpdated.addListener(onTabUpdated);
+      }
+      browser.tabs.query({}).then(getTabs, onError);
+      function getTabs(tabs) {
+        for (let tab of tabs) {
+          checkForMute(tab);
         }
-        browser.tabs.query({}).then(getTabs, onError);
-        function getTabs(tabs) {
-          for (let tab of tabs) {
-            checkForMute(tab);
-          }
-        }
-      }else{
-        if(browser.tabs.onCreated.hasListener(onTabCreated)) {
-          browser.tabs.onCreated.removeListener(onTabCreated);
-          browser.tabs.onUpdated.removeListener(onTabUpdated);
-        }
-        browser.tabs.query({muted:!prefs.whitelist_check}).then(getTabs, onError);
-        function getTabs(tabs) {
-          for (let tab of tabs) {
-            if(!prefs.whitelist_check && (tab.mutedInfo.reason == "extension" /*&& tab.mutedInfo.extensionId == browser.runtime.id*/) && tab.mutedInfo.muted) {
-              unMuteTab(tab);
-            } else {
-              muteTab(tab);
-            }
+      }
+    }else{
+      if(browser.tabs.onCreated.hasListener(onTabCreated)) {
+        browser.tabs.onCreated.removeListener(onTabCreated);
+        browser.tabs.onUpdated.removeListener(onTabUpdated);
+      }
+      browser.tabs.query({muted:!prefs.whitelist_check}).then(getTabs, onError);
+      function getTabs(tabs) {
+        for (let tab of tabs) {
+          if(!prefs.whitelist_check && (tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted) {
+            unMuteTab(tab);
+          } else {
+            muteTab(tab);
           }
         }
       }
     }
-    if ("context_menu" in changes && typeof changes["context_menu"] !== "undefined") {
-      port.postMessage({type: "context-check", position: prefs.context_menu});
-    }
+  }
+  if ("context_menu" in data && typeof data["context_menu"] !== "undefined") {
+    port.postMessage({type: "context-check", position: prefs.context_menu});
   }
 }
 
