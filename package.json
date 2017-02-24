@@ -1,7 +1,7 @@
 {
   "title": "MuteLinks",
   "name": "mutelinks",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Mute Tabs based of URL",
   "main": "main.js",
   "author": "Shaxine",

@@ -53,6 +53,7 @@ $(function() {
       addItemToTable($(this).closest("table").attr('id'), $(this).val());
       $(this).val("");
       saveOption($(this).closest("table").attr('id'));
+      $(this).parent().parent().find(".add:not(.disabled)").addClass("disabled");
     }
   });
   $("table").on("click", ".add", function(e) {
