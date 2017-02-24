@@ -1,6 +1,6 @@
 let info = window.location.href.split("info=")[1].split("-");
 let entryIndex = null;
-browser.runtime.sendMessage({type: "edit-popup-loaded", windowId: info[0], tabIndex: info[1]});
+browser.runtime.sendMessage({type: "edit-popup-loaded", tabId: info[0]});
 
 browser.runtime.onMessage.addListener(msg => {
   const {type} = msg;

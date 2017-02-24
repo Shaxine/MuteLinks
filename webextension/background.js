@@ -31,7 +31,7 @@ function init() {
         break;
       case "add-popup":
         browser.windows.create({
-          url: browser.extension.getURL("popup/add-popup.html?info="+msg.windowId+"-"+msg.tabIndex+"-"+(prefs.whitelist_check?"1":"0")),
+          url: browser.extension.getURL("popup/add-popup.html?info="+msg.tabId+"-"+(prefs.whitelist_check?"1":"0")),
           type: "panel",
           height: 110,
           width: 400
@@ -39,7 +39,7 @@ function init() {
         break;
       case "edit-popup":
         browser.windows.create({
-          url: browser.extension.getURL("popup/edit-popup.html?info="+msg.windowId+"-"+msg.tabIndex+"-"+(prefs.whitelist_check?"1":"0")),
+          url: browser.extension.getURL("popup/edit-popup.html?info="+msg.tabId+"-"+(prefs.whitelist_check?"1":"0")),
           type: "panel",
           height: 110,
           width: 400
@@ -239,9 +239,9 @@ browser.runtime.onMessage.addListener(msg => {
     browser.storage.local.set(list);
     break;
   case "add-popup-loaded":
-    browser.tabs.query({windowId: parseInt(msg.windowId), index: parseInt(msg.tabIndex)}).then(getTabsAdd, onError);
-    function getTabsAdd(tabs) {
-      browser.runtime.sendMessage({type: "add-popup-loaded", entry: tabs[0].url});
+    browser.tabs.get(parseInt(msg.tabId)).then(getTabAdd, onError);
+    function getTabAdd(tab) {
+      browser.runtime.sendMessage({type: "add-popup-loaded", entry: tab.url});
     }
     break;
   case "edit":
@@ -269,9 +269,9 @@ browser.runtime.onMessage.addListener(msg => {
     browser.storage.local.set(list);
     break;
   case "edit-popup-loaded":
-    browser.tabs.query({windowId: parseInt(msg.windowId), index: parseInt(msg.tabIndex)}).then(getTabsEdit, onError);
-    function getTabsEdit(tabs) {
-      let entryIndex = getEntryIndex(tabs[0].url);
+    browser.tabs.get(parseInt(msg.tabId)).then(getTabEdit, onError);
+    function getTabEdit(tab) {
+      let entryIndex = getEntryIndex(tab.url);
       let entry = null;
       if (prefs.whitelist_check) {
         entry = prefs.whiteList.split(/, |,/)[entryIndex];

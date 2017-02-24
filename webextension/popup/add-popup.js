@@ -1,6 +1,6 @@
 let info = window.location.href.split("info=")[1].split("-");
 
-if (info[2]=="1") {
+if (info[1]=="1") {
   document.title = "Add to Whitelist";
   document.getElementById("header").textContent = "Add to Whitelist";
   document.getElementById("add").textContent = "Add to Whitelist";
@@ -10,7 +10,7 @@ if (info[2]=="1") {
   document.getElementById("add").textContent = "Add to Blacklist";
 }
 
-browser.runtime.sendMessage({type: "add-popup-loaded", windowId: info[0], tabIndex: info[1]});
+browser.runtime.sendMessage({type: "add-popup-loaded", tabId: info[0]});
 
 browser.runtime.onMessage.addListener(msg => {
   const {type} = msg;

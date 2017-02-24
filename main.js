@@ -6,6 +6,10 @@ let { modelFor } = require("sdk/model/core");
 let webExtension = require("sdk/webextension");
 let browserWindows = require("sdk/windows").browserWindows;
 let window_utils = require('sdk/window/utils');
+let LegacyExtensionsUtils = require("resource://gre/modules/LegacyExtensionsUtils.jsm").LegacyExtensionsUtils;
+let self = require("sdk/self");
+
+var { Management: { global: { TabManager } } } = require("resource://gre/modules/Extension.jsm");
 
 let webExtPort;
 const menuId = "context_muteLinks";
@@ -118,8 +122,7 @@ function addMenu(chromeWindow, position) {
   newItem.setAttribute("id", "context_MuteLinks_add");
   newItem.setAttribute("label", "Add to Blacklist");
   newItem.addEventListener("command", function(event) {
-    let tab = modelFor(gB.mContextTab);
-    webExtPort.postMessage({type: "add-popup", tabIndex: tab.index, windowId: window_utils.getOuterId(chromeWindow)});
+    webExtPort.postMessage({type: "add-popup", tabId: getTabId(gB.mContextTab)});
   }, false);
   menuPop.appendChild(newItem);
 
@@ -127,8 +130,7 @@ function addMenu(chromeWindow, position) {
   newItem.setAttribute("id", "context_MuteLinks_edit");
   newItem.setAttribute("label", "Edit Entry");
   newItem.addEventListener("command", function(event) {
-    let tab = modelFor(gB.mContextTab);
-    webExtPort.postMessage({type: "edit-popup", tabIndex: tab.index, windowId: window_utils.getOuterId(chromeWindow)});
+    webExtPort.postMessage({type: "edit-popup", tabId: getTabId(gB.mContextTab)});
   }, false);
   menuPop.appendChild(newItem);
 
@@ -157,5 +159,14 @@ function removeMenu(chromeWindow) {
   const doc = chromeWindow.document;
   if (doc.getElementById(menuId)!= null) {
     doc.getElementById(menuId).remove();
+  }
+}
+
+function getTabId(sdkTab) {
+  if (typeof TabManager === "undefined") {
+    let webExtension = LegacyExtensionsUtils.getEmbeddedExtensionFor({ id: self.id });
+    return webExtension.extension.tabManager.wrapTab(viewFor(sdkTab)).id;
+  } else {
+    return TabManager.getId(viewFor(sdkTab));
   }
 }
