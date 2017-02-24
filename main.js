@@ -119,7 +119,6 @@ function addMenu(chromeWindow, position) {
   newItem.setAttribute("label", "Add to Blacklist");
   newItem.addEventListener("command", function(event) {
     let tab = modelFor(gB.mContextTab);
-    let chromeWindow = viewFor(tab.window);
     webExtPort.postMessage({type: "add-popup", tabIndex: tab.index, windowId: window_utils.getOuterId(chromeWindow)});
   }, false);
   menuPop.appendChild(newItem);
@@ -129,7 +128,6 @@ function addMenu(chromeWindow, position) {
   newItem.setAttribute("label", "Edit Entry");
   newItem.addEventListener("command", function(event) {
     let tab = modelFor(gB.mContextTab);
-    let chromeWindow = viewFor(tab.window);
     webExtPort.postMessage({type: "edit-popup", tabIndex: tab.index, windowId: window_utils.getOuterId(chromeWindow)});
   }, false);
   menuPop.appendChild(newItem);
