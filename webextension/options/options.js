@@ -124,10 +124,17 @@ function changeItem(item, value) {
 }
 
 function addItemToTable(item, value) {
-  $("#"+item+" > tbody > tr").last().before("<tr>\
-      <td><span class=\"rule\">"+value+"</span><input class=\"change-rule\" type=\"text\"></td>\
-      <td><img class=\"accept\" src=\"img/accept.png\" /><img class=\"edit\" src=\"img/edit.png\" /><img class=\"delete\" src=\"img/delete.png\" /></td>\
-    </tr>");
+  $("#"+item+" > tbody > tr").last().before($("<tr>")
+    .append($("<td>")
+      .append($("<span>", { class: "rule" }).text(value))
+      .append($("<input>", { class: "change-rule", type: "text" }))
+    )
+    .append($("<td>")
+      .append($("<img>", { class: "accept", src: "img/accept.png" }))
+      .append($("<img>", { class: "edit", src: "img/edit.png" }))
+      .append($("<img>", { class: "delete", src: "img/delete.png" }))
+    )
+  );
 }
 
 function getItem(item) {
