@@ -1,3 +1,4 @@
+let tabs = require("sdk/tabs");
 let tab_utils = require("sdk/tabs/utils");
 let prefs = require("sdk/simple-prefs").prefs;
 let { viewFor } = require("sdk/view/core");
@@ -118,7 +119,8 @@ function addMenu(chromeWindow, position) {
   newItem.setAttribute("label", "Add to Blacklist");
   newItem.addEventListener("command", function(event) {
     let tab = modelFor(gB.mContextTab);
-    webExtPort.postMessage({type: "add-popup", tabIndex: tab.index, windowId: tab.id.split("-")[1]});
+    let chromeWindow = viewFor(tab.window);
+    webExtPort.postMessage({type: "add-popup", tabIndex: tab.index, windowId: window_utils.getOuterId(chromeWindow)});
   }, false);
   menuPop.appendChild(newItem);
 
@@ -127,7 +129,8 @@ function addMenu(chromeWindow, position) {
   newItem.setAttribute("label", "Edit Entry");
   newItem.addEventListener("command", function(event) {
     let tab = modelFor(gB.mContextTab);
-    webExtPort.postMessage({type: "edit-popup", tabIndex: tab.index, windowId: tab.id.split("-")[1]});
+    let chromeWindow = viewFor(tab.window);
+    webExtPort.postMessage({type: "edit-popup", tabIndex: tab.index, windowId: window_utils.getOuterId(chromeWindow)});
   }, false);
   menuPop.appendChild(newItem);
 
