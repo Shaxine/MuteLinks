@@ -69,10 +69,12 @@ function onTabCreated(tab) {
 }
 
 function checkForMute(tab) {
-  if((prefs.privatetab_check && (tab.incognito === true || (("privateTab" in window) && privateTab.isTabPrivate(tab)))) || (prefs.whitelist_check && prefs.whiteList=="")) {
-    muteTab(tab);
+  if ((prefs.privatetab_check && (tab.incognito === true || (("privateTab" in window) && privateTab.isTabPrivate(tab)))) || (prefs.whitelist_check && prefs.whiteList=="")) {
+    if (tab.mutedInfo.reason != "user"){
+      muteTab(tab);
+    }
     return true;
-  }else if(prefs.privatetab_check && !((prefs.blackList != "" && !prefs.whitelist_check) || prefs.whitelist_check)){
+  } else if (prefs.privatetab_check && !((prefs.blackList != "" && !prefs.whitelist_check) || prefs.whitelist_check)){
     if (tab.mutedInfo.muted && tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) {
       unMuteTab(tab);
     }
@@ -81,26 +83,30 @@ function checkForMute(tab) {
   let itemsList = prefs.whitelist_check?prefs.whiteList.split(/, |,/):prefs.blackList.split(/, |,/);
   let url = tab.url;
   for (let item of itemsList){
-    if((item.indexOf("\"") == 0 && item.slice(-1) == "\"") || (item.indexOf("'") == 0 && item.slice(-1) == "'")){
+    if ((item.indexOf("\"") == 0 && item.slice(-1) == "\"") || (item.indexOf("'") == 0 && item.slice(-1) == "'")){
       item = item.replace(/\//g , "\\\/");
       item = "^"+item.slice(1, -1)+"$";
     }
     let pattern = new RegExp(item);
-    if(!prefs.whitelist_check){
-      if(pattern.test(url) && !tab.mutedInfo.muted){
-        muteTab(tab);
+    if (!prefs.whitelist_check){
+      if (pattern.test(url) && !tab.mutedInfo.muted){
+        if (tab.mutedInfo.reason != "user"){
+          muteTab(tab);
+        }
         break;
-      }else if(pattern.test(url) && tab.mutedInfo.muted){
+      } else if (pattern.test(url) && tab.mutedInfo.muted){
         break;
-      }else if((tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted && !pattern.test(url)){
+      } else if ((tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted && !pattern.test(url)){
         unMuteTab(tab);
       }
-    }else{
-      if(!tab.mutedInfo.muted && !pattern.test(url)){
-        muteTab(tab);
-      }else if(pattern.test(url) && !tab.mutedInfo.muted){
+    } else {
+      if (!tab.mutedInfo.muted && !pattern.test(url)){
+        if (tab.mutedInfo.reason != "user"){
+          muteTab(tab);
+        }
+      } else if (pattern.test(url) && !tab.mutedInfo.muted){
         break;
-      }else if((tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted && pattern.test(url)){
+      } else if ((tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted && pattern.test(url)){
         unMuteTab(tab);
         break;
       }
@@ -158,8 +164,8 @@ function onStorageChanged(changes, area) {
 
 function setListeners(data) {
   if ("blackList" in data || "whitelist_check" in data || "whiteList" in data || "privatetab_check" in data) {
-    if(prefs.privatetab_check || (prefs.blackList != "" && !prefs.whitelist_check) || prefs.whitelist_check){
-      if(!browser.tabs.onCreated.hasListener(onTabCreated)) {
+    if (prefs.privatetab_check || (prefs.blackList != "" && !prefs.whitelist_check) || prefs.whitelist_check){
+      if (!browser.tabs.onCreated.hasListener(onTabCreated)) {
         browser.tabs.onCreated.addListener(onTabCreated);
         browser.tabs.onUpdated.addListener(onTabUpdated);
       }
@@ -169,15 +175,15 @@ function setListeners(data) {
           checkForMute(tab);
         }
       }
-    }else{
-      if(browser.tabs.onCreated.hasListener(onTabCreated)) {
+    } else {
+      if (browser.tabs.onCreated.hasListener(onTabCreated)) {
         browser.tabs.onCreated.removeListener(onTabCreated);
         browser.tabs.onUpdated.removeListener(onTabUpdated);
       }
       browser.tabs.query({muted:!prefs.whitelist_check}).then(getTabs, onError);
       function getTabs(tabs) {
         for (let tab of tabs) {
-          if(!prefs.whitelist_check && (tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted) {
+          if (!prefs.whitelist_check && (tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted) {
             unMuteTab(tab);
           } else {
             muteTab(tab);
@@ -197,12 +203,12 @@ function getEntryIndex(url) {
     let itemsList = prefs.whitelist_check?prefs.whiteList.split(/, |,/):prefs.blackList.split(/, |,/);
     for (let item of itemsList){
       let org_item = item;
-      if((item.indexOf('\"')==0 && item.slice(-1)=='\"') || (item.indexOf("'")==0 && item.slice(-1)=="'")){
+      if ((item.indexOf('\"')==0 && item.slice(-1)=='\"') || (item.indexOf("'")==0 && item.slice(-1)=="'")){
         item = item.replace(/\//g , "\\\/");
         item = "^"+item.slice(1, -1)+"$";
       }
       let pattern = new RegExp(item);
-      if(pattern.test(url)) {
+      if (pattern.test(url)) {
         let i = itemsList.indexOf(org_item);
         entryIndex = i;
         break;
