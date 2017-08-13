@@ -2,7 +2,7 @@
     "applications": {
       "gecko": {
         "id": "@mutelinks",
-        "strict_min_version": "51.0"
+        "strict_min_version": "53.0"
       }
     },
 
@@ -27,7 +27,8 @@
     "name": "MuteLinks",
 
     "options_ui": {
-      "page": "options/options.html"
+      "page": "options/options.html",
+      "browser_style": false
     },
 
     "permissions": [
@@ -36,7 +37,7 @@
       "tabs"
     ],
 
-    "version": "0.2beta",
+    "version": "0.2beta2",
 
     "web_accessible_resources": ["images/my-image.png"]
 }

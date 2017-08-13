@@ -6,6 +6,48 @@ let prefs = {};
 
 function init() {
   browser.storage.onChanged.addListener(onStorageChanged);
+  browser.contextMenus.onClicked.addListener(onContextMenuClicked);
+  function onContextMenuClicked(info, tab) {
+    if (info.menuItemId == "add_edit") {
+      let entry = false;
+      let entryIndex = -1;
+      if ((prefs.whitelist_check?prefs.whiteList:prefs.blackList)!="") {
+        let itemsList = prefs.whitelist_check?prefs.whiteList.split(/, |,/):prefs.blackList.split(/, |,/);
+        for (let item of itemsList) {
+          let org_item = item;
+          if ((item.indexOf("\"")==0 && item.slice(-1)=="\"") || (item.indexOf("'")==0 && item.slice(-1)=="'")) {
+            item = item.replace(/\//g , "\\\/");
+            item = "^"+item.slice(1, -1)+"$";
+          }
+          let pattern = new RegExp(item);
+          if (pattern.test(tab.url)) {
+            entry = org_item;
+            entryIndex = itemsList.indexOf(org_item);
+            break;
+          }
+        }
+      }
+      if (!entry) {
+        browser.windows.create({
+          url: browser.extension.getURL("popup/add-popup.html?info="+btoa(tab.url)+"-"+(prefs.whitelist_check?"1":"0")),
+          type: "panel",
+          height: 110,
+          width: 400
+        }).then({}, onError);
+      } else {
+        browser.windows.create({
+          url: browser.extension.getURL("popup/edit-popup.html?info="+btoa(entry)+"-"+entryIndex),
+          type: "panel",
+          height: 110,
+          width: 400
+        }).then({}, onError);
+      }
+    } else if (info.menuItemId == "privatetab_check") {
+      browser.storage.local.set({privatetab_check: !prefs.privatetab_check});
+    } else if (info.menuItemId == "settings") {
+      browser.runtime.openOptionsPage(); 
+    }
+  }
   retriveData();
 }
 
@@ -84,7 +126,6 @@ function unMuteTab(tab) {
 
 function retriveData() {
   browser.storage.local.get().then(onStorageGet, onError);
-
   function onStorageGet(items) {
     if (typeof items[0] !== "undefined") {
       items = items[0];
@@ -98,10 +139,13 @@ function retriveData() {
         context_menu: true,
       });
     } else {
-      if (items.context_menu == "none") {
-        items.context_menu = false;
-      } else if(items.context_menu == "top" || items.context_menu == "bottom") {
-        items.context_menu = true;
+      if (typeof(items.context_menu) !== "boolean") {
+        if (items.context_menu == "none") {
+          items.context_menu = false;
+        } else if(items.context_menu == "top" || items.context_menu == "bottom") {
+          items.context_menu = true;
+        }
+        browser.storage.local.set({context_menu: items.context_menu});
       }
       prefs = items;
       setListeners(prefs);
@@ -183,54 +227,9 @@ function setListeners(data) {
         title: "Settings",
         contexts: ["tab"]
       });
-      if (!browser.tabs.onCreated.hasListener(onContextMenuClicked)) {
-        browser.contextMenus.onClicked.addListener(onContextMenuClicked);
-      }
-      function onContextMenuClicked(info, tab) {
-        if (info.menuItemId == "add_edit") {
-          let entry = false;
-          let entryIndex = -1;
-          if ((prefs.whitelist_check?prefs.whiteList:prefs.blackList)!="") {
-            let itemsList = prefs.whitelist_check?prefs.whiteList.split(/, |,/):prefs.blackList.split(/, |,/);
-            for (let item of itemsList) {
-              let org_item = item;
-              if ((item.indexOf("\"")==0 && item.slice(-1)=="\"") || (item.indexOf("'")==0 && item.slice(-1)=="'")) {
-                item = item.replace(/\//g , "\\\/");
-                item = "^"+item.slice(1, -1)+"$";
-              }
-              let pattern = new RegExp(item);
-              if (pattern.test(tab.url)) {
-                entry = org_item;
-                entryIndex = itemsList.indexOf(org_item);
-                break;
-              }
-            }
-          }
-          if (!entry) {
-            browser.windows.create({
-              url: browser.extension.getURL("popup/add-popup.html?info="+btoa(tab.url)+"-"+(prefs.whitelist_check?"1":"0")),
-              type: "panel",
-              height: 110,
-              width: 400
-            }).then({}, onError);
-          } else {
-            browser.windows.create({
-              url: browser.extension.getURL("popup/edit-popup.html?info="+btoa(entry)+"-"+entryIndex),
-              type: "panel",
-              height: 110,
-              width: 400
-            }).then({}, onError);
-          }
-        } else if (info.menuItemId == "privatetab_check") {
-          browser.storage.local.set({privatetab_check: !prefs.privatetab_check});
-        } else if (info.menuItemId == "settings") {
-          browser.runtime.openOptionsPage(); 
-        }
-      }
     } else {
       browser.contextMenus.removeAll();
     }
-    
   }
 }
 
