@@ -31,15 +31,15 @@ function init() {
         browser.windows.create({
           url: browser.extension.getURL("popup/add-popup.html?info="+btoa(tab.url)+"-"+(prefs.whitelist_check?"1":"0")),
           type: "panel",
-          height: 110,
-          width: 400
+          height: 130,
+          width: 420
         }).then({}, onError);
       } else {
         browser.windows.create({
           url: browser.extension.getURL("popup/edit-popup.html?info="+btoa(entry)+"-"+entryIndex),
           type: "panel",
-          height: 110,
-          width: 400
+          height: 130,
+          width: 420
         }).then({}, onError);
       }
     } else if (info.menuItemId == "privatetab_check") {

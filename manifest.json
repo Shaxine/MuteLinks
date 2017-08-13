@@ -37,7 +37,7 @@
       "tabs"
     ],
 
-    "version": "0.2beta2",
+    "version": "0.2",
 
     "web_accessible_resources": ["images/my-image.png"]
 }
