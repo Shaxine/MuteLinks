@@ -34,11 +34,12 @@
     },
 
     "permissions": [
+      "contextMenus",
       "storage",
       "tabs"
     ],
 
-    "version": "0.1.4",
+    "version": "0.2beta",
 
     "web_accessible_resources": ["images/my-image.png"]
 }

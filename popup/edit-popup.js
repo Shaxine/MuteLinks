@@ -1,18 +1,7 @@
 let info = window.location.href.split("info=")[1].split("-");
-let entryIndex = null;
-browser.runtime.sendMessage({type: "edit-popup-loaded", tabId: info[0]});
-
-browser.runtime.onMessage.addListener(msg => {
-  const {type} = msg;
-
-  switch (type) {
-    case "edit-popup-loaded":
-      document.getElementById("entry").value = msg.entry;
-      document.getElementById("entry").select();
-      entryIndex = msg.entryIndex;
-      break;
-  }
-});
+let entryIndex = info[1];
+document.getElementById("entry").value = atob(info[0]);
+document.getElementById("entry").select();
 
 document.addEventListener("click", (e) => {
   e.preventDefault();

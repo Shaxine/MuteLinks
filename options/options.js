@@ -20,12 +20,12 @@ $(function() {
     if (e.which == 13) {
       if ($(this).val() != "" && !$(this).val().match( /( |,)/ )) {
         $(this).hide().prev(".rule").text($(this).val()).show().parent().parent().find(".accept").hide().next().show();
-        saveOption($(this).closest("table").attr('id'));
+        saveOption($(this).closest("table").attr("id"));
       }
     } else if (e.which == 9) {
       if ($(this).val() != "" && !$(this).val().match( /( |,)/ )) {
         $(this).hide().prev(".rule").text($(this).val()).show().parent().parent().find(".accept").hide().next().show();
-        saveOption($(this).closest("table").attr('id'));
+        saveOption($(this).closest("table").attr("id"));
       } else {
         $(this).hide().prev(".rule").show().parent().parent().find(".accept").hide().next().show();
       }
@@ -50,26 +50,26 @@ $(function() {
   });
   $("table").on("keydown", ".new-rule", function(e) {
     if(e.which == 13 && $(this).val() != "" && !$(this).val().match( /( |,)/ )) {
-      addItemToTable($(this).closest("table").attr('id'), $(this).val());
+      addItemToTable($(this).closest("table").attr("id"), $(this).val());
       $(this).val("");
-      saveOption($(this).closest("table").attr('id'));
+      saveOption($(this).closest("table").attr("id"));
       $(this).parent().parent().find(".add:not(.disabled)").addClass("disabled");
     }
   });
   $("table").on("click", ".add", function(e) {
-    addItemToTable($(this).closest("table").attr('id'), $(this).parent().parent().find(".new-rule").val());
+    addItemToTable($(this).closest("table").attr("id"), $(this).parent().parent().find(".new-rule").val());
     $(this).addClass("disabled").parent().parent().find(".new-rule").val("");
-    saveOption($(this).closest("table").attr('id'));
+    saveOption($(this).closest("table").attr("id"));
   });
   $("table").on("click", ".delete", function(e) {
-    let option = $(this).closest("table").attr('id');
+    let option = $(this).closest("table").attr("id");
     if (confirm("Do you want to remove the \""+$(this).parent().parent().find(".rule").text()+"\" rule?")) {
       $(this).parent().parent().remove();
       saveOption(option);
     }
   });
-  $('form').on('change', ':checkbox, select', function(){
-    saveOption($(this).attr('id'));
+  $("form").on("change", ":checkbox, select", function(){
+    saveOption($(this).attr("id"));
   });
   $(document).on("click", "#paypal", function(e) {
     browser.tabs.create({url:"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=79NLHH9LUBGWU"});
@@ -86,9 +86,7 @@ function saveOption(option) {
 }
 
 function restoreOptions() {
-  
   browser.storage.local.get(prefsNames).then(onStorageGet, onError);
-
   function onStorageGet(items) {
     if (typeof items[0] !== "undefined") {
       items = items[0];
@@ -110,9 +108,9 @@ function changeItem(item, value) {
       }
     }
   } else if ($("#"+item).prop("tagName").toLowerCase() == "select"){
-    $("#"+item+" option[value=\""+value+"\"]").prop('selected', true);
+    $("#"+item+" option[value=\""+value+"\"]").prop("selected", true);
   } else {
-    switch ($("#"+item).prop('type')) {
+    switch ($("#"+item).prop("type")) {
       case "text":
         $("#"+item).val(value);
         break;
@@ -151,7 +149,7 @@ function getItem(item) {
   } else if ($("#"+item).prop("tagName").toLowerCase() == "select"){
     return $("#"+item).val();
   } else {
-    switch ($("#"+item).prop('type')) {
+    switch ($("#"+item).prop("type")) {
       case "text":
         return $("#"+item).val();
       case "checkbox":
