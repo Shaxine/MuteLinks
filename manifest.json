@@ -7,8 +7,7 @@
     },
 
     "developer": {
-      "name": "Shaxine",
-      "url": "https://addons.mozilla.org/en-US/firefox/user/Shaxine/"
+      "name": "Shaxine"
     },
 
     "background": {
@@ -37,5 +36,5 @@
       "tabs"
     ],
 
-    "version": "0.2"
+    "version": "0.2.1"
 }
