@@ -15,6 +15,7 @@ $(function() {
     $(this).hide().next().show();
     let $changeRule = $(this).parent().parent().find(".change-rule").hide();
     $changeRule.prev(".rule").text($changeRule.val()).show();
+    saveOption($(this).closest("table").attr("id"));
   });
   $("table").on("keydown", ".change-rule", function(e) {
     if (e.which == 13) {
