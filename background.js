@@ -64,7 +64,7 @@ function checkForMute(tab) {
     }
     return true;
   } else if (prefs.privatetab_check && !((prefs.blackList != "" && !prefs.whitelist_check) || prefs.whitelist_check)) {
-    if (tab.mutedInfo.muted && tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) {
+    if (tab.mutedInfo.muted && tab.mutedInfo.reason == "extension" && (tab.mutedInfo.extensionId == extensionId || tab.mutedInfo.extensionId == browser.runtime.id)) {
       unMuteTab(tab);
     }
     return true;
@@ -87,7 +87,7 @@ function checkForMute(tab) {
       } else if (pattern.test(url) && tab.mutedInfo.muted) {
           mute = true;
         break;
-      } else if ((tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted && !pattern.test(url)) {
+      } else if ((tab.mutedInfo.reason == "extension" && (tab.mutedInfo.extensionId == extensionId || tab.mutedInfo.extensionId == browser.runtime.id)) && tab.mutedInfo.muted && !pattern.test(url)) {
         mute = false;
       }
     } else {
@@ -97,7 +97,7 @@ function checkForMute(tab) {
         }
       } else if (pattern.test(url) && !tab.mutedInfo.muted) {
         break;
-      } else if ((tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted && pattern.test(url)) {
+      } else if ((tab.mutedInfo.reason == "extension" && (tab.mutedInfo.extensionId == extensionId || tab.mutedInfo.extensionId == browser.runtime.id)) && tab.mutedInfo.muted && pattern.test(url)) {
         mute = false;
         break;
       }
@@ -184,7 +184,7 @@ function setListeners(data) {
       browser.tabs.query({muted:!prefs.whitelist_check}).then(getTabs, onError);
       function getTabs(tabs) {
         for (let tab of tabs) {
-          if (!prefs.whitelist_check && (tab.mutedInfo.reason == "extension" && tab.mutedInfo.extensionId == extensionId) && tab.mutedInfo.muted) {
+          if (!prefs.whitelist_check && (tab.mutedInfo.reason == "extension" && (tab.mutedInfo.extensionId == extensionId || tab.mutedInfo.extensionId == browser.runtime.id)) && tab.mutedInfo.muted) {
             unMuteTab(tab);
           } else {
             muteTab(tab);
