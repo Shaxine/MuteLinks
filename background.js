@@ -96,6 +96,7 @@ function checkForMute(tab) {
           mute = true;
         }
       } else if (pattern.test(url) && !tab.mutedInfo.muted) {
+        mute = false;
         break;
       } else if ((tab.mutedInfo.reason == "extension" && (tab.mutedInfo.extensionId == extensionId || tab.mutedInfo.extensionId == browser.runtime.id)) && tab.mutedInfo.muted && pattern.test(url)) {
         mute = false;
